@@ -1,0 +1,40 @@
+import java.sql.*;
+
+public class teste {
+	public static void main(String[] args) {
+		String url = "jdbc:mysql://localhost:3306/hour";
+		String user = "aluno_cd";
+		String senha = "aluno_pw";
+		try (Connection con = DriverManager.getConnection(url, user, senha)) {
+			System.out.println("Conectado a: " + con.getMetaData().getDatabaseProductName());
+			String sqlIns = "INSERT INTO horarios (nome,hora_inicio,hora_fim,tag) VALUES (?,?,?,?)";
+			try (PreparedStatement ps = con.prepareStatement(sqlIns)) {
+				ps.setString(1, "Dormir");
+				ps.setInt(2, 2);
+				ps.setInt(3, 2);
+				ps.setInt(4, 1);
+				ps.executeUpdate();
+				System.out.println("Horario inserido.");
+			}
+			String sqlSel = "SELECT * FROM horarios ORDER BY hora_inicio DESC";
+			try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sqlSel)) {
+				System.out.println("\n--- Horarios ---");
+				while (rs.next()) {
+					System.out.printf("%d | %s | %s | %.1f%n", rs.getInt("idhorarios"), rs.getString("nome"),
+							rs.getInt("hora_inicio"), rs.getInt("hora_fim"), rs.getInt("tag"));
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de banco: " + e.getMessage());
+		}
+	}
+}
+----
+CREATE TABLE `horarios` (
+  `idhorarios` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(45) NOT NULL,
+  `hora_inicio` time NOT NULL,
+  `hora_fim` time NOT NULL,
+  `tag` int NOT NULL,
+  PRIMARY KEY (`idhorarios`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
