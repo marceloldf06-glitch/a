@@ -1,0 +1,32 @@
+package projeto;
+
+import java.sql.*;
+
+public class Conexão {
+	public static void main(String[] args) {
+		String url = "jdbc:mysql://localhost:3306/escola";
+		String user = "aluno_cd";
+		String senha = "aluno_pw";
+		try (Connection con = DriverManager.getConnection(url, user, senha)) {
+			System.out.println("Conectado a: " + con.getMetaData().getDatabaseProductName());
+			String sqlIns = "INSERT INTO estudante (nome,curso,nota) VALUES (?,?,?)";
+			try (PreparedStatement ps = con.prepareStatement(sqlIns)) {
+				ps.setString(1, "Diego Alves");
+				ps.setString(2, "ADS");
+				ps.setDouble(3, 8.0);
+				ps.executeUpdate();
+				System.out.println("Estudante inserido.");
+			}
+			String sqlSel = "SELECT id,nome,curso,nota FROM estudante ORDER BY nota DESC";
+			try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sqlSel)) {
+				System.out.println("\n--- Estudantes ---");
+				while (rs.next()) {
+					System.out.printf("%d | %s | %s | %.1f%n", rs.getInt("id"), rs.getString("nome"),
+							rs.getString("curso"), rs.getDouble("nota"));
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de banco: " + e.getMessage());
+		}
+	}
+}
