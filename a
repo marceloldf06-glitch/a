@@ -30,6 +30,10 @@ public class teste {
 	}
 }
 ----
+CREATE USER IF NOT EXISTS 'aluno_cd'@'localhost' IDENTIFIED BY 'aluno_pw';
+GRANT ALL PRIVILEGES ON escola.* TO 'aluno_cd'@'localhost';
+FLUSH PRIVILEGES;
+CREATE SCHEMA IF NOT EXISTS hora
 CREATE TABLE `horarios` (
   `idhorarios` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(45) NOT NULL,
